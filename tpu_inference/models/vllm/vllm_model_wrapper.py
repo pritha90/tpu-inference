@@ -414,6 +414,7 @@ class VllmModelWrapper:
             intermediate_tensors: JaxIntermediateTensors = None,
             is_first_rank: bool = True,
             is_last_rank: bool = True,
+            shared_attn_metadata: AttentionMetadata | None = None,
             *args,
         ) -> Tuple[List[jax.Array], jax.Array, List[jax.Array]] | Tuple[
                 List[jax.Array], jax.Array, List[jax.Array], jax.Array]:
@@ -425,7 +426,8 @@ class VllmModelWrapper:
                     layer_name_to_kvcache_index=layer_name_to_kvcache_index,
                     vllm_config=self.vllm_config), set_forward_context(
                         attn_metadata=attn_metadata,
-                        vllm_config=self.vllm_config):
+                        vllm_config=self.vllm_config,
+                        shared_attn_metadata=shared_attn_metadata):
                 # We need to wrap args from jax land into TorchValue with
                 # torch_view in order to call the Torch function.
                 original_lora_metadata = replace_lora_metadata(
